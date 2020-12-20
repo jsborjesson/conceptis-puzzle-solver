@@ -1,15 +1,15 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png" />
-  <HelloWorld msg="Hello Vue 3.0 + Vite" />
+  <h1>fill-a-pix solver</h1>
+  <FillAPix />
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import FillAPix from './components/FillAPix.vue'
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    FillAPix
   }
 }
 </script>
