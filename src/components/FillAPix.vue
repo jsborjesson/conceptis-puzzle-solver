@@ -1,79 +1,102 @@
 <template>
-  <input type="checkbox" id="editing" v-model="editing" /><label for="editing">Edit</label>
+  <div class="wrapper">
+    <div class="controls">
+      <input type="number" v-model="height" />
+      x
+      <input type="number" v-model="width" />
+      <button @click="generateGrid">Clear grid</button>
+    </div>
 
-  <button @click="plusRow">v</button>
-  <button @click="minusRow">^</button>
-  <button @click="plusCol">&gt;</button>
-  <button @click="minusCol">&lt;</button>
+    <table class="grid">
+      <tr v-for="(rowEl, row) in grid" :key="row">
+        <td v-for="(_, col) in rowEl" :key="row + 'x' + col">
+          <span v-if="solution" :class="[solution[row][col] ? 'black' : 'white']">{{ grid[row][col] }}</span>
+          <input v-else v-model="grid[row][col]" />
+        </td>
+      </tr>
+    </table>
 
-  <div>
-    {{ height }}x{{ width }} grid
+    <button @click="solve">Solve</button>
   </div>
-
-  <table>
-    <tr v-for="(row, rowIndex) in grid" :key="rowIndex">
-      <td v-for="(cell, cellIndex) in row" :key="(rowIndex*10) + cellIndex">
-        <input v-if="editing" v-model="grid[rowIndex][cellIndex].number" />
-        {{ cell }}
-      </td>
-    </tr>
-  </table>
 </template>
+
+<style scoped>
+.wrapper {
+  display: flex;
+  flex-direction: column;
+
+}
+
+.controls input {
+  width: 40px;
+}
+
+.grid {
+  margin: 1rem auto 1rem auto;
+}
+
+td {
+  padding: 0;
+  margin: 0;
+}
+
+.grid input,
+.grid span {
+  width: 20px;
+  height: 20px;
+}
+
+.grid span {
+  display: block;
+  margin: 0;
+  padding: 5px;
+}
+
+.grid span.black {
+  color: whitesmoke;
+  background-color: black;
+}
+
+.grid span.white {
+  color: black;
+  background-color: lightgray;
+}
+</style>
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import { solve, generateGrid, Digit } from "../lib/solver";
 
-type Digit = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
-
-enum Fill {
-  Black,
-  White,
-}
-
-interface Cell {
-  number?: Digit;
-  fill?: Fill;
-}
-
-const empty = (): Cell => ({});
+const U = undefined;
 
 export default defineComponent({
   data() {
     return {
-      editing: true,
-      grid: [[empty()]],
+      height: 10,
+      width: 10,
+      grid: [
+        [U, 2, 3, U, U, 0, U, U, U, U],
+        [U, U, U, U, 3, U, 2, U, U, 6],
+        [U, U, 5, U, 5, 3, U, 5, 7, 4],
+        [U, 4, U, 5, U, 5, U, 6, U, 3],
+        [U, U, 4, U, 5, U, 6, U, U, 3],
+        [U, U, U, 2, U, 5, U, U, U, U],
+        [4, U, 1, U, U, U, 1, 1, U, U],
+        [4, U, 1, U, U, U, 1, U, 4, U],
+        [U, U, U, U, 6, U, U, U, U, 4],
+        [U, 4, 4, U, U, U, U, 4, U, U],
+      ] as Digit[][],
+      solution: undefined
     };
   },
-  computed: {
-    height(): number {
-      return this.grid.length;
-    },
-    width(): number {
-      return this.grid[0].length;
-    }
-  },
   methods: {
-    plusRow(): void {
-      const row = Array.from({length: this.width}, () => empty());
-      this.grid.push(row);
+    generateGrid(): void {
+      this.solution = undefined;
+      this.grid = generateGrid(this.height, this.width, () => undefined);
     },
-    minusRow(): void {
-      if (this.height > 1) {
-        this.grid.pop();
-      }
-    },
-    plusCol(): void {
-      this.grid.forEach(row => {
-        row.push(empty());
-      });
-    },
-    minusCol(): void {
-      if (this.width > 1) {
-        this.grid.forEach(row => {
-          row.pop();
-        });
-      }
-    },
+    solve(): void {
+      this.solution = solve(this.grid);
+    }
   },
 })
 </script>
