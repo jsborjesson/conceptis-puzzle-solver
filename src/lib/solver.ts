@@ -26,21 +26,69 @@ enum Color {
 export const blankPuzzle = (height: number, width: number): Puzzle => {
   const puzzle: Puzzle = generateGrid(width, height, () => ({ number: undefined, fill: Color.Unfilled }));
   return puzzle;
-}
+};
 
 export const createPuzzle = (grid: number[][]): Puzzle => {
   const { width, height } = size(grid);
   const puzzle: Puzzle = generateGrid(width, height, ({ row, col }) => ({ number: grid[row][col], fill: Color.Unfilled }));
   return puzzle;
-}
+};
 
-export const solve = (puzzle: Puzzle): Puzzle => {
-  const n = neighbors(puzzle, { row: 1, col: 2 });
-  fill(puzzle, Color.Filled, n);
-  const n2 = neighbors(puzzle, { row: 2, col: 3 });
-  fill(puzzle, Color.Crossed, n2);
-  return puzzle;
-}
+export const solve = (puzzle: Puzzle): boolean => {
+  const { height, width } = size(puzzle);
+
+  for (let row = 0; row < height; row += 1) {
+    for (let col = 0; col < width; col += 1) {
+      solveSquare(puzzle, { row, col });
+    }
+  }
+};
+
+export const solveSquare = (puzzle: Puzzle, pos: Position): void => {
+  const square = puzzle[pos.row][pos.col];
+
+  if (square.number === undefined) {
+    return;
+  }
+
+  const neighbors = neighborIndices(puzzle, pos);
+  const { filled, unfilled } = count(puzzle, neighbors);
+  const toBeFilled = square.number - filled;
+
+  if (toBeFilled === unfilled) {
+    fill(puzzle, Color.Filled, neighbors);
+  }
+
+  if (toBeFilled === 0) {
+    fill(puzzle, Color.Crossed, neighbors);
+  }
+};
+
+const count = (puzzle: Puzzle, squares: Position[]): { filled: number, unfilled: number, crossed: number } => {
+  const result = {
+    filled: 0,
+    unfilled: 0,
+    crossed: 0,
+  }
+
+  squares.forEach(({ row, col }) => {
+    switch (puzzle[row][col].fill) {
+      case Color.Filled:
+        result.filled++;
+        break;
+
+      case Color.Crossed:
+        result.crossed++;
+        break;
+
+      case Color.Unfilled:
+        result.unfilled++;
+        break;
+    }
+  });
+
+  return result;
+};
 
 export const generateGrid = <T>(height: number, width: number, cell: (pos: Position) => T): T[][] => {
   const grid: T[][] = [];
@@ -64,11 +112,10 @@ const fill = (puzzle: Puzzle, color: Color, squares: Position[]): void => {
       puzzle[row][col].fill = color;
     }
   });
-  console.log(puzzle);
 };
 
 // Returns the index pairs of the 4-9 available neighbors (including self) in a grid.
-const neighbors = (puzzle: Puzzle, pos: Position): Position[] => {
+const neighborIndices = (puzzle: Puzzle, pos: Position): Position[] => {
   const offsets = [
     [-1, -1], [-1, 0], [-1, 1],
     [0, -1], [0, 0], [0, 1],
@@ -95,4 +142,4 @@ const size = <T>(grid: T[][]): Size => {
     height: grid.length,
     width: grid[0]?.length || 0,
   }
-}
+};
