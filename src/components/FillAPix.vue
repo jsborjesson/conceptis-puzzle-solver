@@ -24,7 +24,6 @@
 .wrapper {
   display: flex;
   flex-direction: column;
-
 }
 
 .controls input {
@@ -39,18 +38,29 @@ td {
   padding: 0;
   margin: 0;
   border: 1px solid black;
+  text-align: center;
 }
 
 .grid input,
 .grid span {
-  width: 20px;
-  height: 20px;
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
+
+  margin: 0;
+  padding: 0;
+  border: 0;
+
+  font-size: 1rem;
+  font-family: sans-serif;
+}
+
+.grid input {
+  text-align: center;
 }
 
 .grid span {
   display: block;
-  margin: 0;
-  padding: 5px;
 }
 
 .grid span.fill0 {
