@@ -1,4 +1,6 @@
-export type Digit = number | undefined;
+export type Puzzle = Square[][];
+
+type Digit = number | undefined;
 
 interface Position {
   row: number;
@@ -10,7 +12,6 @@ interface Size {
   width: number;
 }
 
-type Puzzle = Square[][];
 
 interface Square {
   number: number;
@@ -34,14 +35,17 @@ export const createPuzzle = (grid: number[][]): Puzzle => {
   return puzzle;
 };
 
-export const solve = (puzzle: Puzzle): void => {
+export const solveStep = (puzzle: Puzzle): Puzzle => {
   const { height, width } = size(puzzle);
+  const solution = deepCopy(puzzle);
 
   for (let row = 0; row < height; row += 1) {
     for (let col = 0; col < width; col += 1) {
-      solveSquare(puzzle, { row, col });
+      solveSquare(solution, { row, col });
     }
   }
+
+  return solution;
 };
 
 export const solveSquare = (puzzle: Puzzle, pos: Position): void => {
@@ -142,4 +146,8 @@ const size = <T>(grid: T[][]): Size => {
     height: grid.length,
     width: grid[0]?.length || 0,
   }
+};
+
+const deepCopy = <T>(obj: T): T => {
+  return JSON.parse(JSON.stringify(obj));
 };
