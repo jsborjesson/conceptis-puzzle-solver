@@ -1,10 +1,16 @@
 <template>
   <div class="wrapper">
     <div class="controls">
-      <input type="number" v-model="height" />
-      x
-      <input type="number" v-model="width" />
-      <button @click="resetGrid">Clear grid</button>
+      <div>
+        <input type="number" v-model="height" />
+        x
+        <input type="number" v-model="width" />
+        <button @click="blankPuzzle">Clear grid</button>
+      </div>
+
+      <div>
+        <button v-for="(_, index) in examples" :key="index" @click="examplePuzzle(index)">Example puzzle {{index + 1}}</button>
+      </div>
     </div>
 
     <table class="grid">
@@ -79,9 +85,8 @@ td {
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { solve, createPuzzle, blankPuzzle } from "../lib/solver";
-
-const U = undefined;
+import { solve, blankPuzzle } from "../lib/solver";
+import { examples } from "../lib/puzzles";
 
 export default defineComponent({
   data() {
@@ -89,24 +94,21 @@ export default defineComponent({
       editing: true,
       height: 10,
       width: 10,
-      puzzle: createPuzzle([
-        [U, 2, 3, U, U, 0, U, U, U, U],
-        [U, U, U, U, 3, U, 2, U, U, 6],
-        [U, U, 5, U, 5, 3, U, 5, 7, 4],
-        [U, 4, U, 5, U, 5, U, 6, U, 3],
-        [U, U, 4, U, 5, U, 6, U, U, 3],
-        [U, U, U, 2, U, 5, U, U, U, U],
-        [4, U, 1, U, U, U, 1, 1, U, U],
-        [4, U, 1, U, U, U, 1, U, 4, U],
-        [U, U, U, U, 6, U, U, U, U, 4],
-        [U, 4, 4, U, U, U, U, 4, U, U],
-      ]),
+      puzzle: undefined,
+      examples,
     };
   },
+  mounted(): void {
+    this.blankPuzzle();
+  },
   methods: {
-    resetGrid(): void {
+    blankPuzzle(): void {
       this.editing = true;
       this.puzzle = blankPuzzle(this.height, this.width);
+    },
+    examplePuzzle(index: number): void {
+      this.editing = false;
+      this.puzzle = examples[index];
     },
     solve(): void {
       this.solution = solve(this.puzzle);

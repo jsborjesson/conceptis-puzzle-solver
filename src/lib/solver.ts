@@ -24,17 +24,17 @@ enum Color {
 }
 
 export const blankPuzzle = (height: number, width: number): Puzzle => {
-  const puzzle: Puzzle = generateGrid(width, height, () => ({ number: undefined, fill: Color.Unfilled }));
+  const puzzle: Puzzle = generateGrid(height, width, () => ({ number: undefined, fill: Color.Unfilled }));
   return puzzle;
 };
 
 export const createPuzzle = (grid: number[][]): Puzzle => {
   const { width, height } = size(grid);
-  const puzzle: Puzzle = generateGrid(width, height, ({ row, col }) => ({ number: grid[row][col], fill: Color.Unfilled }));
+  const puzzle: Puzzle = generateGrid(height, width, ({ row, col }) => ({ number: grid[row][col], fill: Color.Unfilled }));
   return puzzle;
 };
 
-export const solve = (puzzle: Puzzle): boolean => {
+export const solve = (puzzle: Puzzle): void => {
   const { height, width } = size(puzzle);
 
   for (let row = 0; row < height; row += 1) {
