@@ -4,14 +4,14 @@
       <input type="number" v-model="height" />
       x
       <input type="number" v-model="width" />
-      <button @click="generateGrid">Clear grid</button>
+      <button @click="resetGrid">Clear grid</button>
     </div>
 
     <table class="grid">
-      <tr v-for="(rowEl, row) in grid" :key="row">
-        <td v-for="(_, col) in rowEl" :key="row + 'x' + col">
-          <span v-if="solution" :class="[solution[row][col] ? 'black' : 'white']">{{ grid[row][col] }}</span>
-          <input v-else v-model="grid[row][col]" />
+      <tr v-for="(rows, row) in puzzle" :key="row">
+        <td v-for="(square, col) in rows" :key="row + 'x' + col">
+          <input v-if="editing" v-model="puzzle[row][col].number" />
+          <span v-else :class="'fill' + square.fill">{{ square.number }}</span>
         </td>
       </tr>
     </table>
@@ -38,6 +38,7 @@
 td {
   padding: 0;
   margin: 0;
+  border: 1px solid black;
 }
 
 .grid input,
@@ -52,29 +53,33 @@ td {
   padding: 5px;
 }
 
-.grid span.black {
+.grid span.fill0 {
   color: whitesmoke;
   background-color: black;
 }
-
-.grid span.white {
+.grid span.fill1 {
   color: black;
   background-color: lightgray;
+}
+.grid span.fill2 {
+  color: black;
+  background-color: white;
 }
 </style>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { solve, generateGrid, Digit } from "../lib/solver";
+import { solve, createPuzzle, blankPuzzle } from "../lib/solver";
 
 const U = undefined;
 
 export default defineComponent({
   data() {
     return {
+      editing: true,
       height: 10,
       width: 10,
-      grid: [
+      puzzle: createPuzzle([
         [U, 2, 3, U, U, 0, U, U, U, U],
         [U, U, U, U, 3, U, 2, U, U, 6],
         [U, U, 5, U, 5, 3, U, 5, 7, 4],
@@ -85,17 +90,17 @@ export default defineComponent({
         [4, U, 1, U, U, U, 1, U, 4, U],
         [U, U, U, U, 6, U, U, U, U, 4],
         [U, 4, 4, U, U, U, U, 4, U, U],
-      ] as Digit[][],
-      solution: undefined
+      ]),
     };
   },
   methods: {
-    generateGrid(): void {
-      this.solution = undefined;
-      this.grid = generateGrid(this.height, this.width, () => undefined);
+    resetGrid(): void {
+      this.editing = true;
+      this.puzzle = blankPuzzle(this.height, this.width);
     },
     solve(): void {
-      this.solution = solve(this.grid);
+      this.solution = solve(this.puzzle);
+      this.editing = false;
     }
   },
 })
