@@ -1,7 +1,5 @@
 export type Puzzle = Square[][];
 
-type Digit = number | undefined;
-
 interface Position {
   row: number;
   col: number;
@@ -14,7 +12,7 @@ interface Size {
 
 
 interface Square {
-  number: number;
+  number: number | undefined;
   fill: Color;
 }
 
@@ -24,15 +22,20 @@ enum Color {
   Unfilled,
 }
 
+// Generate an empty puzzle with the given size
 export const blankPuzzle = (height: number, width: number): Puzzle => {
-  const puzzle: Puzzle = generateGrid(height, width, () => ({ number: undefined, fill: Color.Unfilled }));
-  return puzzle;
+  return generateGrid(
+    { height, width },
+    () => ({ number: undefined, fill: Color.Unfilled })
+  );
 };
 
+// Create a Puzzle type from a grid of numbers
 export const createPuzzle = (grid: number[][]): Puzzle => {
-  const { width, height } = size(grid);
-  const puzzle: Puzzle = generateGrid(height, width, ({ row, col }) => ({ number: grid[row][col], fill: Color.Unfilled }));
-  return puzzle;
+  return generateGrid(
+    size(grid),
+    ({ row, col }) => ({ number: grid[row][col], fill: Color.Unfilled })
+  );
 };
 
 export const solveStep = (puzzle: Puzzle): Puzzle => {
@@ -48,7 +51,7 @@ export const solveStep = (puzzle: Puzzle): Puzzle => {
   return solution;
 };
 
-export const solveSquare = (puzzle: Puzzle, pos: Position): void => {
+const solveSquare = (puzzle: Puzzle, pos: Position): void => {
   const square = puzzle[pos.row][pos.col];
 
   if (square.number === undefined) {
@@ -94,14 +97,14 @@ const count = (puzzle: Puzzle, squares: Position[]): { filled: number, unfilled:
   return result;
 };
 
-export const generateGrid = <T>(height: number, width: number, cell: (pos: Position) => T): T[][] => {
+const generateGrid = <T>(size: Size, createSquare: (pos: Position) => T): T[][] => {
   const grid: T[][] = [];
 
-  for (let row = 0; row < height; row += 1) {
+  for (let row = 0; row < size.height; row += 1) {
     const cells: T[] = [];
 
-    for (let col = 0; col < width; col += 1) {
-      cells.push(cell({ row, col }));
+    for (let col = 0; col < size.width; col += 1) {
+      cells.push(createSquare({ row, col }));
     }
 
     grid.push(cells);
