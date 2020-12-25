@@ -1,14 +1,21 @@
 <template>
-  <div class="my-8">
+  <div class="flex flex-col items-center justify-center my-8 space-y-4">
+    <span>Input a puzzle</span>
+
     <div class="flex items-center justify-center space-x-4">
       <input type="number" v-model="height" class="w-20 p-2 border border-gray-400 rounded" />
       <span>x</span>
       <input type="number" v-model="width" class="w-20 p-2 border border-gray-400 rounded" />
-      <button @click="blankPuzzle" class="p-2 bg-gray-100 border border-gray-400 rounded">Clear grid</button>
+      <button @click="blankPuzzle" class="p-2 bg-gray-100 border border-gray-400 rounded">Clear puzzle</button>
     </div>
 
-    <div>
-      <button v-for="(_, index) in examples" :key="index" @click="examplePuzzle(index)">Example puzzle {{index + 1}}</button>
+    <span>or start with an example</span>
+
+    <div class="flex items-center justify-center space-x-4">
+      <select v-model="example" class="p-2 border border-gray-400 rounded">
+        <option v-for="(_, index) in examples" :key="index" :value="index">Example puzzle {{index + 1}}</option>
+      </select>
+      <button @click="examplePuzzle(example)" class="p-2 bg-gray-100 border border-gray-400 rounded">Show</button>
     </div>
   </div>
 
@@ -49,10 +56,12 @@ export default defineComponent({
   data() {
     return {
       editing: true,
+      example: 0,
+      examples,
       height: 10,
       width: 10,
+
       steps: [] as Puzzle[],
-      examples,
     };
   },
   mounted(): void {
