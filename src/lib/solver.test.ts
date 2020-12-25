@@ -16,7 +16,7 @@ describe("blankPuzzle", () => {
 
     p.forEach(row => {
       row.forEach(square => {
-        expect(square.fill).toEqual(2);
+        expect(square.fill).toEqual("unfilled");
       });
     });
   });
@@ -62,7 +62,7 @@ describe("createPuzzle", () => {
 
     s.forEach((rows) => {
       rows.forEach((square) => {
-        expect(square.fill).toEqual(2);
+        expect(square.fill).toEqual("unfilled");
       });
     });
   });
@@ -81,7 +81,7 @@ describe("solveStep", () => {
 
     p.forEach((rows) => {
       rows.forEach((square) => {
-        expect(square.fill).toEqual(2);
+        expect(square.fill).toEqual("unfilled");
       });
     });
   });

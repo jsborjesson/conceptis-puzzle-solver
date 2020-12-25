@@ -26,7 +26,7 @@
         v-for="(square, col) in rows"
         :key="row + 'x' + col"
         class="w-12 h-12 text-center border-b border-r border-black"
-        :class="{'bg-black text-white': square.fill === 0, 'bg-gray-300': square.fill === 1}">
+        :class="{'bg-black text-white': square.fill === 'filled', 'bg-gray-300': square.fill === 'crossed'}">
         <input
           v-if="editing"
           class="w-full text-center"

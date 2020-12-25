@@ -16,17 +16,13 @@ interface Square {
   fill: Color;
 }
 
-enum Color {
-  Filled,
-  Crossed,
-  Unfilled,
-}
+type Color = "filled" | "crossed" | "unfilled";
 
 // Generate an empty puzzle with the given size
 export const blankPuzzle = (height: number, width: number): Puzzle => {
   return generateGrid(
     { height, width },
-    () => ({ number: undefined, fill: Color.Unfilled })
+    () => ({ number: undefined, fill: "unfilled" })
   );
 };
 
@@ -34,7 +30,7 @@ export const blankPuzzle = (height: number, width: number): Puzzle => {
 export const createPuzzle = (grid: number[][]): Puzzle => {
   return generateGrid(
     size(grid),
-    ({ row, col }) => ({ number: grid[row][col], fill: Color.Unfilled })
+    ({ row, col }) => ({ number: grid[row][col], fill: "unfilled" })
   );
 };
 
@@ -63,11 +59,11 @@ const solveSquare = (puzzle: Puzzle, pos: Position): void => {
   const toBeFilled = square.number - filled;
 
   if (toBeFilled === unfilled) {
-    fill(puzzle, Color.Filled, neighbors);
+    fill(puzzle, "filled", neighbors);
   }
 
   if (toBeFilled === 0) {
-    fill(puzzle, Color.Crossed, neighbors);
+    fill(puzzle, "crossed", neighbors);
   }
 };
 
@@ -79,19 +75,7 @@ const count = (puzzle: Puzzle, squares: Position[]): { filled: number, unfilled:
   }
 
   squares.forEach(({ row, col }) => {
-    switch (puzzle[row][col].fill) {
-      case Color.Filled:
-        result.filled++;
-        break;
-
-      case Color.Crossed:
-        result.crossed++;
-        break;
-
-      case Color.Unfilled:
-        result.unfilled++;
-        break;
-    }
+    result[puzzle[row][col].fill] += 1;
   });
 
   return result;
@@ -115,7 +99,7 @@ const generateGrid = <T>(size: Size, createSquare: (pos: Position) => T): T[][] 
 
 const fill = (puzzle: Puzzle, color: Color, squares: Position[]): void => {
   squares.forEach(({ row, col }) => {
-    if (puzzle[row][col].fill === Color.Unfilled) {
+    if (puzzle[row][col].fill === "unfilled") {
       puzzle[row][col].fill = color;
     }
   });
