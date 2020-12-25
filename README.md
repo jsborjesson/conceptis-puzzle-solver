@@ -5,9 +5,15 @@ Vue/Vite app to solve
 puzzles.
 
 ```sh
+# Install dependencies
+npm install
+
 # Start local server
 npm run dev
 
-# Publish to gh-pages branch
+# Run tests
+npm test
+
+# Publish to GitHub Pages
 npm run deploy
 ```
