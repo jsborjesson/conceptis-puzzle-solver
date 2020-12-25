@@ -1,5 +1,5 @@
 <template>
-  <h1>fill-a-pix solver</h1>
+  <h1 class="mt-8 text-5xl text-center">fill-a-pix solver</h1>
   <FillAPix />
 </template>
 

@@ -1,106 +1,44 @@
 <template>
-  <div class="wrapper">
-    <div class="controls">
-      <div>
-        <input type="number" v-model="height" />
-        x
-        <input type="number" v-model="width" />
-        <button @click="blankPuzzle">Clear grid</button>
-      </div>
-
-      <div>
-        <button v-for="(_, index) in examples" :key="index" @click="examplePuzzle(index)">Example puzzle {{index + 1}}</button>
-      </div>
+  <div class="my-8">
+    <div class="flex items-center justify-center space-x-4">
+      <input type="number" v-model="height" class="w-20 p-2 border border-gray-400 rounded" />
+      <span>x</span>
+      <input type="number" v-model="width" class="w-20 p-2 border border-gray-400 rounded" />
+      <button @click="blankPuzzle" class="p-2 bg-gray-100 border border-gray-400 rounded">Clear grid</button>
     </div>
 
-    <table class="grid">
-      <tr v-for="(rows, row) in puzzle" :key="row">
-        <td v-for="(square, col) in rows" :key="row + 'x' + col">
-          <input v-if="editing" v-model="puzzle[row][col].number" />
-          <span v-else :class="'fill' + square.fill">{{ square.number }}</span>
-        </td>
-      </tr>
-    </table>
-
-    <div class="step">
-      <button class="back" @click="stepBack">Step back</button>
-      <button class="forward" @click="stepForward">Step forward</button>
+    <div>
+      <button v-for="(_, index) in examples" :key="index" @click="examplePuzzle(index)">Example puzzle {{index + 1}}</button>
     </div>
   </div>
+
+  <!-- Grid -->
+  <table class="mx-auto my-8 border-t border-l border-black">
+    <tr v-for="(rows, row) in puzzle" :key="row">
+      <td
+        v-for="(square, col) in rows"
+        :key="row + 'x' + col"
+        class="w-12 h-12 text-center border-b border-r border-black"
+        :class="{'bg-black text-white': square.fill === 0, 'bg-gray-300': square.fill === 1}">
+        <input
+          v-if="editing"
+          class="w-full text-center"
+          v-model="puzzle[row][col].number" />
+        <span
+          v-else
+          class="w-full h-full">
+          {{ square.number }}
+        </span>
+      </td>
+    </tr>
+  </table>
+
+  <!-- Solver buttons -->
+  <div class="flex px-4 mb-12">
+    <button class="flex-1 p-4 font-bold bg-red-400 rounded-l" @click="stepBack">Step back</button>
+    <button class="flex-1 p-4 font-bold bg-green-400 rounded-r" @click="stepForward">Step forward</button>
+  </div>
 </template>
-
-<style scoped>
-.wrapper {
-  display: flex;
-  flex-direction: column;
-}
-
-.controls input {
-  width: 40px;
-}
-
-.grid {
-  margin: 1rem auto 1rem auto;
-}
-
-td {
-  padding: 0;
-  margin: 0;
-  border: 1px solid black;
-  text-align: center;
-}
-
-.grid input,
-.grid span {
-  width: 40px;
-  height: 40px;
-  line-height: 40px;
-
-  margin: 0;
-  padding: 0;
-  border: 0;
-
-  font-size: 1rem;
-  font-family: sans-serif;
-}
-
-.grid input {
-  text-align: center;
-}
-
-.grid span {
-  display: block;
-}
-
-.grid span.fill0 {
-  color: whitesmoke;
-  background-color: black;
-}
-.grid span.fill1 {
-  color: black;
-  background-color: lightgray;
-}
-.grid span.fill2 {
-  color: black;
-  background-color: white;
-}
-
-.step {
-  display: flex;
-}
-.step button {
-  flex: 1;
-  padding: 1rem;
-  margin: 1rem;
-  font-weight: bold;
-}
-.step .back {
-  background-color: orangered;
-}
-.step .forward {
-  background-color: lightgreen;
-}
-</style>
 
 <script lang="ts">
 import { defineComponent } from "vue";
