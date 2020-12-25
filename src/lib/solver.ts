@@ -41,20 +41,18 @@ export const createPuzzle = (grid: number[][]): Puzzle => {
 * It does not alter the parameter.
 */
 export const solveStep = (puzzle: Puzzle): Puzzle | undefined => {
-  const { height, width } = size(puzzle);
   const solution = deepCopy(puzzle);
-
   let progress = false;
 
-  for (let row = 0; row < height; row += 1) {
-    for (let col = 0; col < width; col += 1) {
+  solution.forEach((rows, row) =>  {
+    rows.forEach((_, col) => {
       const solved = solveSquare(solution, { row, col });
 
       if (solved) {
         progress = true;
       }
-    }
-  }
+    })
+  });
 
   if (!progress) {
     return undefined;
