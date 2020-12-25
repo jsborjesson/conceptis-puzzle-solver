@@ -73,9 +73,11 @@ export default defineComponent({
       this.solutionSteps = [examples[index]];
     },
     stepForward(): void {
-      this.solutionSteps.push(
-        solveStep(this.puzzle),
-      );
+      const step = solveStep(this.puzzle);
+
+      if (step) {
+        this.solutionSteps.push(step);
+      }
     },
     stepBack(): void {
       if (this.solutionSteps.length > 1) {
