@@ -16,13 +16,13 @@ interface Square {
   fill: Color;
 }
 
-type Color = "filled" | "crossed" | "unfilled";
+type Color = "filled" | "crossed" | "empty";
 
 // Generate an empty puzzle with the given size
 export const blankPuzzle = (height: number, width: number): Puzzle => {
   return generateGrid(
     { height, width },
-    () => ({ number: undefined, fill: "unfilled" })
+    () => ({ number: undefined, fill: "empty" })
   );
 };
 
@@ -30,10 +30,16 @@ export const blankPuzzle = (height: number, width: number): Puzzle => {
 export const createPuzzle = (grid: number[][]): Puzzle => {
   return generateGrid(
     size(grid),
-    ({ row, col }) => ({ number: grid[row][col], fill: "unfilled" })
+    ({ row, col }) => ({ number: grid[row][col], fill: "empty" })
   );
 };
 
+/*
+* Makes a single pass over the entire puzzle, filling in all basic clues.
+*
+* Returns a copy of the solution, or undefined if no progress was made.
+* It does not alter the parameter.
+*/
 export const solveStep = (puzzle: Puzzle): Puzzle => {
   const { height, width } = size(puzzle);
   const solution = deepCopy(puzzle);
@@ -55,10 +61,10 @@ const solveSquare = (puzzle: Puzzle, pos: Position): void => {
   }
 
   const neighbors = neighborIndices(puzzle, pos);
-  const { filled, unfilled } = count(puzzle, neighbors);
+  const { filled, empty } = count(puzzle, neighbors);
   const toBeFilled = square.number - filled;
 
-  if (toBeFilled === unfilled) {
+  if (toBeFilled === empty) {
     fill(puzzle, "filled", neighbors);
   }
 
@@ -67,10 +73,10 @@ const solveSquare = (puzzle: Puzzle, pos: Position): void => {
   }
 };
 
-const count = (puzzle: Puzzle, squares: Position[]): { filled: number, unfilled: number, crossed: number } => {
+const count = (puzzle: Puzzle, squares: Position[]): { filled: number, empty: number, crossed: number } => {
   const result = {
     filled: 0,
-    unfilled: 0,
+    empty: 0,
     crossed: 0,
   }
 
@@ -99,7 +105,7 @@ const generateGrid = <T>(size: Size, createSquare: (pos: Position) => T): T[][] 
 
 const fill = (puzzle: Puzzle, color: Color, squares: Position[]): void => {
   squares.forEach(({ row, col }) => {
-    if (puzzle[row][col].fill === "unfilled") {
+    if (puzzle[row][col].fill === "empty") {
       puzzle[row][col].fill = color;
     }
   });

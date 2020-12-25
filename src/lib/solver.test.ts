@@ -11,12 +11,12 @@ describe("blankPuzzle", () => {
     expect(p[1].length).toEqual(3);
   });
 
-  test("all squares unfilled", () => {
+  test("all squares empty", () => {
     const p = blankPuzzle(2, 3);
 
     p.forEach(row => {
       row.forEach(square => {
-        expect(square.fill).toEqual("unfilled");
+        expect(square.fill).toEqual("empty");
       });
     });
   });
@@ -39,7 +39,6 @@ describe("createPuzzle", () => {
       [U, U, U],
       [7, U, 9],
     ];
-
     const p = createPuzzle(grid);
 
     p.forEach((rows, row) => {
@@ -49,40 +48,62 @@ describe("createPuzzle", () => {
     });
   });
 
-  test("returns an unfilled puzzle", () => {
-    const grid = [
+  test("returns an empty puzzle", () => {
+    const p = createPuzzle([
       [U, 2, 3],
       [U, U, U],
       [7, U, 9],
-    ];
+    ]);
 
-    const p = createPuzzle(grid);
-
-    const s = solveStep(p);
-
-    s.forEach((rows) => {
+    p.forEach((rows) => {
       rows.forEach((square) => {
-        expect(square.fill).toEqual("unfilled");
+        expect(square.fill).toEqual("empty");
       });
     });
   });
 });
 
+const F = "filled";
+const X = "crossed";
+const E = "empty";
+
 describe("solveStep", () => {
   test("does not alter input puzzle", () => {
-    const grid = [
+    const p = createPuzzle([
       [U, 2, 3],
       [U, U, U],
-      [7, U, 9],
-    ];
-    const p = createPuzzle(grid);
-
-
+      [7, U, 4],
+    ]);
+    solveStep(p);
 
     p.forEach((rows) => {
       rows.forEach((square) => {
-        expect(square.fill).toEqual("unfilled");
+        expect(square.fill).toEqual("empty");
       });
     });
+  });
+
+  test("solves basic clues", () => {
+    const p = createPuzzle([
+      [U, U, 4],
+      [U, U, U],
+      [U, U, 2],
+    ]);
+    const s = solveStep(p);
+
+    const expected = [
+      [E, F, F],
+      [E, F, F],
+      [E, X, X],
+    ];
+
+    s.forEach((rows, row) => {
+      rows.forEach((square, col) => {
+        expect(square.fill).toEqual(expected[row][col]);
+      });
+    });
+  });
+
+  test("returns undefined when no progress was made", () => {
   });
 });
