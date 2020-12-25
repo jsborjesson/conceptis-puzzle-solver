@@ -105,5 +105,14 @@ describe("solveStep", () => {
   });
 
   test("returns undefined when no progress was made", () => {
+    const p = createPuzzle([
+      [U, U, 4],
+      [U, U, U],
+      [U, U, 2],
+    ]);
+    const s1 = solveStep(p);
+    const s2 = solveStep(s1);
+
+    expect(s2).toBeUndefined();
   });
 });

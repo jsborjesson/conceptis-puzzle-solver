@@ -40,24 +40,34 @@ export const createPuzzle = (grid: number[][]): Puzzle => {
 * Returns a copy of the solution, or undefined if no progress was made.
 * It does not alter the parameter.
 */
-export const solveStep = (puzzle: Puzzle): Puzzle => {
+export const solveStep = (puzzle: Puzzle): Puzzle | undefined => {
   const { height, width } = size(puzzle);
   const solution = deepCopy(puzzle);
 
+  let progress = false;
+
   for (let row = 0; row < height; row += 1) {
     for (let col = 0; col < width; col += 1) {
-      solveSquare(solution, { row, col });
+      const solved = solveSquare(solution, { row, col });
+
+      if (solved) {
+        progress = true;
+      }
     }
+  }
+
+  if (!progress) {
+    return undefined;
   }
 
   return solution;
 };
 
-const solveSquare = (puzzle: Puzzle, pos: Position): void => {
+const solveSquare = (puzzle: Puzzle, pos: Position): boolean => {
   const square = puzzle[pos.row][pos.col];
 
   if (square.number === undefined) {
-    return;
+    return false;
   }
 
   const neighbors = neighborIndices(puzzle, pos);
@@ -65,12 +75,14 @@ const solveSquare = (puzzle: Puzzle, pos: Position): void => {
   const toBeFilled = square.number - filled;
 
   if (toBeFilled === empty) {
-    fill(puzzle, "filled", neighbors);
+    return fill(puzzle, "filled", neighbors);
   }
 
   if (toBeFilled === 0) {
-    fill(puzzle, "crossed", neighbors);
+    return fill(puzzle, "crossed", neighbors);
   }
+
+  return false;
 };
 
 const count = (puzzle: Puzzle, squares: Position[]): { filled: number, empty: number, crossed: number } => {
@@ -103,12 +115,17 @@ const generateGrid = <T>(size: Size, createSquare: (pos: Position) => T): T[][] 
   return grid;
 }
 
-const fill = (puzzle: Puzzle, color: Color, squares: Position[]): void => {
+const fill = (puzzle: Puzzle, color: Color, squares: Position[]): boolean => {
+  let progress = false;
+
   squares.forEach(({ row, col }) => {
     if (puzzle[row][col].fill === "empty") {
       puzzle[row][col].fill = color;
+      progress = true;
     }
   });
+
+  return progress;
 };
 
 // Returns the index pairs of the 4-9 available neighbors (including self) in a grid.
