@@ -1,6 +1,9 @@
 import { blankPuzzle, createPuzzle, solveStep } from "./solver";
 
 const U = undefined;
+const F = "filled";
+const X = "crossed";
+const E = "empty";
 
 describe("blankPuzzle", () => {
   test("returns a grid of requested size", () => {
@@ -63,10 +66,6 @@ describe("createPuzzle", () => {
   });
 });
 
-const F = "filled";
-const X = "crossed";
-const E = "empty";
-
 describe("solveStep", () => {
   test("does not alter input puzzle", () => {
     const p = createPuzzle([
@@ -81,6 +80,18 @@ describe("solveStep", () => {
         expect(square.fill).toEqual("empty");
       });
     });
+  });
+
+  test("returns undefined when no progress was made", () => {
+    const p = createPuzzle([
+      [U, U, 4],
+      [U, U, U],
+      [U, U, 2],
+    ]);
+    const s1 = solveStep(p);
+    const s2 = solveStep(s1);
+
+    expect(s2).toBeUndefined();
   });
 
   test("solves basic clues", () => {
@@ -104,15 +115,29 @@ describe("solveStep", () => {
     });
   });
 
-  test("returns undefined when no progress was made", () => {
+  test("solves advanced clues", () => {
     const p = createPuzzle([
-      [U, U, 4],
-      [U, U, U],
-      [U, U, 2],
+      [0, U, 4, 4, U],
+      [U, 4, U, 6, U],
+      [3, U, 7, 6, U],
+      [U, 6, U, 6, 5],
+      [U, U, U, U, 3],
     ]);
-    const s1 = solveStep(p);
-    const s2 = solveStep(s1);
+    const basic = solveStep(p);
+    const advanced = solveStep(basic);
 
-    expect(s2).toBeUndefined();
+    const expected = [
+      [X, X, F, F, X],
+      [X, X, F, F, X],
+      [E, E, E, F, F], // These 2 filled based on the 3 below the 5
+      [E, E, E, E, E],
+      [E, E, E, E, E],
+    ];
+
+    advanced.forEach((rows, row) => {
+      rows.forEach((square, col) => {
+        expect(square.fill).toEqual(expected[row][col]);
+      });
+    });
   });
 });
