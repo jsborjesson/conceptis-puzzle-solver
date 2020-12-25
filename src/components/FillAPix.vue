@@ -6,7 +6,7 @@
       <input type="number" v-model="height" class="w-20 p-2 border border-gray-400 rounded" />
       <span>x</span>
       <input type="number" v-model="width" class="w-20 p-2 border border-gray-400 rounded" />
-      <button @click="blankPuzzle" class="p-2 bg-gray-100 border border-gray-400 rounded">Clear puzzle</button>
+      <button @click="blankPuzzle" class="p-2 bg-gray-100 border border-gray-400 rounded active:bg-gray-300">Clear puzzle</button>
     </div>
 
     <span>or start with an example</span>
@@ -15,7 +15,7 @@
       <select v-model="example" class="p-2 border border-gray-400 rounded">
         <option v-for="(_, index) in examples" :key="index" :value="index">Example puzzle {{index + 1}}</option>
       </select>
-      <button @click="examplePuzzle(example)" class="p-2 bg-gray-100 border border-gray-400 rounded">Show</button>
+      <button @click="examplePuzzle(example)" class="p-2 bg-gray-100 border border-gray-400 rounded active:bg-gray-300">Show</button>
     </div>
   </div>
 
@@ -36,8 +36,8 @@
 
   <!-- Solver buttons -->
   <div class="flex px-4 mb-12">
-    <button class="flex-1 p-4 font-bold bg-red-400 rounded-l" @click="stepBack">Step back</button>
-    <button class="flex-1 p-4 font-bold bg-green-400 rounded-r" @click="stepForward">Step forward</button>
+    <button class="flex-1 p-4 font-bold text-white bg-red-500 rounded-l active:bg-red-700" @click="stepBack">Step back</button>
+    <button class="flex-1 p-4 font-bold text-white bg-green-500 rounded-r active:bg-green-700" @click="stepForward">Step forward</button>
   </div>
 </template>
 
