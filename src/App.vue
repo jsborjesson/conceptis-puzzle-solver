@@ -4,12 +4,13 @@
 </template>
 
 <script>
-import FillAPix from './components/FillAPix.vue'
+import { defineComponent } from "vue";
+import FillAPix from "./components/FillAPix.vue";
 
-export default {
-  name: 'App',
+export default defineComponent({
+  name: "App",
   components: {
     FillAPix
-  }
-}
+  },
+});
 </script>
