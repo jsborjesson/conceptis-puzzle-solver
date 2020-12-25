@@ -13,7 +13,7 @@
 
     <div class="flex items-center justify-center space-x-4">
       <select v-model="example" class="p-2 border border-gray-400 rounded">
-        <option v-for="(_, index) in examples" :key="index" :value="index">Example puzzle {{index + 1}}</option>
+        <option v-for="(_, name) in examples" :key="name" :value="name">{{ name }}</option>
       </select>
       <button @click="examplePuzzle(example)" class="p-2 bg-gray-100 border border-gray-400 rounded active:bg-gray-300">Show</button>
     </div>
@@ -49,7 +49,7 @@ import { examples } from "../lib/puzzles";
 export default defineComponent({
   data() {
     return {
-      example: 0,
+      example: "",
       examples,
       height: 10,
       width: 10,
@@ -69,8 +69,11 @@ export default defineComponent({
     blankPuzzle(): void {
       this.solutionSteps = [blankPuzzle(this.height, this.width)];
     },
-    examplePuzzle(index: number): void {
-      this.solutionSteps = [examples[index]];
+    examplePuzzle(name: string): void {
+      const example = examples[name];
+      if (example) {
+        this.solutionSteps = [example];
+      }
     },
     stepForward(): void {
       const step = solveStep(this.puzzle);
