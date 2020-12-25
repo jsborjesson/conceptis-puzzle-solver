@@ -49,13 +49,12 @@ import { examples } from "../lib/puzzles";
 export default defineComponent({
   data() {
     return {
-      editing: true,
       example: 0,
       examples,
       height: 10,
       width: 10,
 
-      steps: [] as Puzzle[],
+      solutionSteps: [] as Puzzle[],
     };
   },
   mounted(): void {
@@ -63,27 +62,24 @@ export default defineComponent({
   },
   computed: {
     puzzle(): Puzzle {
-      return this.steps[this.steps.length - 1];
+      return this.solutionSteps[this.solutionSteps.length - 1];
     },
   },
   methods: {
     blankPuzzle(): void {
-      this.editing = true;
-      this.steps = [blankPuzzle(this.height, this.width)];
+      this.solutionSteps = [blankPuzzle(this.height, this.width)];
     },
     examplePuzzle(index: number): void {
-      this.editing = false;
-      this.steps = [examples[index]];
+      this.solutionSteps = [examples[index]];
     },
     stepForward(): void {
-      this.editing = false;
-      this.steps.push(
+      this.solutionSteps.push(
         solveStep(this.puzzle),
       );
     },
     stepBack(): void {
-      if (this.steps.length > 1) {
-        this.steps.pop();
+      if (this.solutionSteps.length > 1) {
+        this.solutionSteps.pop();
       }
     },
   },
