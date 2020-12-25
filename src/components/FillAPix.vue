@@ -88,7 +88,9 @@ export default defineComponent({
       );
     },
     stepBack(): void {
-      this.steps.pop();
+      if (this.steps.length > 1) {
+        this.steps.pop();
+      }
     },
   },
 })
