@@ -73,11 +73,11 @@ const solveSquare = (puzzle: Puzzle, pos: Position): boolean => {
   const toBeFilled = square.number - filled;
 
   if (toBeFilled === empty) {
-    return fill(puzzle, "filled", neighbors);
+    return fill(puzzle, neighbors, "filled");
   }
 
   if (toBeFilled === 0) {
-    return fill(puzzle, "crossed", neighbors);
+    return fill(puzzle, neighbors, "crossed");
   }
 
   return false;
@@ -113,7 +113,7 @@ const generateGrid = <T>(size: Size, createSquare: (pos: Position) => T): T[][] 
   return grid;
 }
 
-const fill = (puzzle: Puzzle, color: Color, squares: Position[]): boolean => {
+const fill = (puzzle: Puzzle, squares: Position[], color: Color): boolean => {
   let progress = false;
 
   squares.forEach(({ row, col }) => {
