@@ -28,14 +28,8 @@
         class="w-12 h-12 text-center border-b border-r border-black"
         :class="{'bg-black text-white': square.fill === 'filled', 'bg-gray-300': square.fill === 'crossed'}">
         <input
-          v-if="editing"
-          class="w-full text-center"
+          class="w-full text-center bg-transparent"
           v-model="puzzle[row][col].number" />
-        <span
-          v-else
-          class="w-full h-full">
-          {{ square.number }}
-        </span>
       </td>
     </tr>
   </table>
