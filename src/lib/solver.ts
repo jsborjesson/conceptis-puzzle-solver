@@ -1,13 +1,9 @@
+import { deepCopy } from "./utils";
 import { Puzzle, Color } from "./puzzles";
 
 interface Position {
   row: number;
   col: number;
-}
-
-interface Size {
-  height: number;
-  width: number;
 }
 
 /*
@@ -105,8 +101,4 @@ const neighborIndices = (puzzle: Puzzle, pos: Position): Position[] => {
   });
 
   return result;
-};
-
-const deepCopy = <T>(obj: T): T => {
-  return JSON.parse(JSON.stringify(obj));
 };
