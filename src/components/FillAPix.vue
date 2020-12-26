@@ -43,8 +43,8 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { solveStep, blankPuzzle, Puzzle } from "../lib/solver";
-import { examples } from "../lib/puzzles";
+import { solveStep } from "../lib/solver";
+import { blankPuzzle, Puzzle, examples } from "../lib/puzzles";
 
 export default defineComponent({
   data() {

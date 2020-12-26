@@ -1,4 +1,36 @@
-import { createPuzzle, Puzzle } from "./solver";
+export type Puzzle = Square[][];
+
+export interface Square {
+  number: number | undefined;
+  fill: Color;
+}
+
+export type Color = "filled" | "crossed" | "empty";
+
+
+// Generate an empty puzzle with the given size
+export const blankPuzzle = (height: number, width: number): Puzzle => {
+  const puzzle: Puzzle = [];
+
+  for (let row = 0; row < height; row += 1) {
+    const cells: Square[] = [];
+
+    for (let col = 0; col < width; col += 1) {
+      cells.push({ number: undefined, fill: "empty" });
+    }
+
+    puzzle.push(cells);
+  }
+
+  return puzzle;
+};
+
+// Create a Puzzle type from a grid of numbers
+export const createPuzzle = (grid: number[][]): Puzzle => {
+  return grid.map((rows) => {
+    return rows.map((number) => ({ number, fill: "empty" }));
+  });
+};
 
 const U = undefined;
 

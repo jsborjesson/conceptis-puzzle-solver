@@ -1,4 +1,4 @@
-export type Puzzle = Square[][];
+import { Puzzle, Color } from "./puzzles";
 
 interface Position {
   row: number;
@@ -9,30 +9,6 @@ interface Size {
   height: number;
   width: number;
 }
-
-
-interface Square {
-  number: number | undefined;
-  fill: Color;
-}
-
-type Color = "filled" | "crossed" | "empty";
-
-// Generate an empty puzzle with the given size
-export const blankPuzzle = (height: number, width: number): Puzzle => {
-  return generateGrid(
-    { height, width },
-    () => ({ number: undefined, fill: "empty" })
-  );
-};
-
-// Create a Puzzle type from a grid of numbers
-export const createPuzzle = (grid: number[][]): Puzzle => {
-  return generateGrid(
-    size(grid),
-    ({ row, col }) => ({ number: grid[row][col], fill: "empty" })
-  );
-};
 
 /*
 * Makes a single pass over the entire puzzle, filling in all basic clues.
@@ -97,22 +73,6 @@ const count = (puzzle: Puzzle, squares: Position[]): { filled: number, empty: nu
   return result;
 };
 
-const generateGrid = <T>(size: Size, createSquare: (pos: Position) => T): T[][] => {
-  const grid: T[][] = [];
-
-  for (let row = 0; row < size.height; row += 1) {
-    const cells: T[] = [];
-
-    for (let col = 0; col < size.width; col += 1) {
-      cells.push(createSquare({ row, col }));
-    }
-
-    grid.push(cells);
-  }
-
-  return grid;
-}
-
 const fill = (puzzle: Puzzle, squares: Position[], color: Color): boolean => {
   let progress = false;
 
@@ -134,26 +94,17 @@ const neighborIndices = (puzzle: Puzzle, pos: Position): Position[] => {
     [1, -1], [1, 0], [1, 1],
   ];
 
-  const { width, height } = size(puzzle);
-
   const result: Position[] = [];
 
   offsets.forEach(([offsetRow, offsetCol]) => {
     const [row, col] = [pos.row + offsetRow, pos.col + offsetCol];
 
-    if (row >= 0 && row < height && col >= 0 && col < width) {
+    if (row >= 0 && row < puzzle.length && col >= 0 && col < puzzle[row].length) {
       result.push({ row, col });
     }
   });
 
   return result;
-};
-
-const size = <T>(grid: T[][]): Size => {
-  return {
-    height: grid.length,
-    width: grid[0]?.length || 0,
-  }
 };
 
 const deepCopy = <T>(obj: T): T => {
