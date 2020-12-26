@@ -32,7 +32,8 @@
           :class="{'bg-black text-white': square.fill === 'filled', 'bg-gray-300': square.fill === 'crossed'}"
           :style="`width: ${squareSize}px; height: ${squareSize}px;`">
           <input
-            class="w-full text-center bg-transparent"
+            type="number"
+            class="w-full text-center bg-transparent focus:outline-none"
             v-model="puzzle[row][col].number" />
         </td>
       </tr>
@@ -45,6 +46,18 @@
     </div>
   </div>
 </template>
+
+<style scoped>
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance:textfield;
+}
+</style>
 
 <script lang="ts">
 import { defineComponent } from "vue";
