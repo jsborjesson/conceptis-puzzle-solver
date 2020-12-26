@@ -6,9 +6,9 @@
       <span>Input a puzzle</span>
 
       <div class="flex items-center justify-center space-x-4">
-        <input type="number" v-model="height" class="w-20 p-2 border border-gray-400 rounded" />
+        <input type="number" v-model="blankHeight" class="w-20 p-2 border border-gray-400 rounded" />
         <span>x</span>
-        <input type="number" v-model="width" class="w-20 p-2 border border-gray-400 rounded" />
+        <input type="number" v-model="blankWidth" class="w-20 p-2 border border-gray-400 rounded" />
         <button @click="blankPuzzle" class="p-2 bg-gray-100 border border-gray-400 rounded active:bg-gray-300">Clear puzzle</button>
       </div>
 
@@ -29,7 +29,8 @@
           v-for="(square, col) in rows"
           :key="row + 'x' + col"
           class="w-12 h-12 text-center border-b border-r border-black"
-          :class="{'bg-black text-white': square.fill === 'filled', 'bg-gray-300': square.fill === 'crossed'}">
+          :class="{'bg-black text-white': square.fill === 'filled', 'bg-gray-300': square.fill === 'crossed'}"
+          :style="`width: ${squareSize}px; height: ${squareSize}px;`">
           <input
             class="w-full text-center bg-transparent"
             v-model="puzzle[row][col].number" />
@@ -50,13 +51,15 @@ import { defineComponent } from "vue";
 import { solveStep } from "../lib/solver";
 import { blankPuzzle, Puzzle, examples } from "../lib/puzzles";
 
+const MAX_SQUARE_SIZE: number = 50;
+
 export default defineComponent({
   data() {
     return {
       example: "",
       examples,
-      height: 10,
-      width: 10,
+      blankHeight: 10,
+      blankWidth: 10,
 
       solutionSteps: [] as Puzzle[],
     };
@@ -68,10 +71,13 @@ export default defineComponent({
     puzzle(): Puzzle {
       return this.solutionSteps[this.solutionSteps.length - 1];
     },
+    squareSize(): number {
+      return Math.min(window.innerWidth / this.puzzle[0].length, MAX_SQUARE_SIZE);
+    },
   },
   methods: {
     blankPuzzle(): void {
-      this.solutionSteps = [blankPuzzle(this.height, this.width)];
+      this.solutionSteps = [blankPuzzle(this.blankHeight, this.blankWidth)];
     },
     examplePuzzle(name: string): void {
       const example = examples[name];
