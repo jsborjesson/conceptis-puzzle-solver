@@ -1,5 +1,5 @@
-import { createPuzzle } from "./puzzles";
-import { solveStep } from "./solver";
+import { createPuzzle } from "../puzzles";
+import { solveStep } from "../solver";
 
 const U = undefined;
 const F = "filled";

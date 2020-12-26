@@ -1,4 +1,4 @@
-import { blankPuzzle, createPuzzle } from "./puzzles";
+import { blankPuzzle, createPuzzle } from "../puzzles";
 
 const U = undefined;
 
