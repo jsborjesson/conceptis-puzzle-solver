@@ -123,8 +123,8 @@ describe("solveStep", () => {
       [U, 6, U, 6, 5],
       [U, U, U, U, 3],
     ]);
-    const basic = solveStep(p);
-    const advanced = solveStep(basic);
+    const basicStep = solveStep(p);
+    const advancedStep = solveStep(basicStep);
 
     const expected = [
       [X, X, F, F, X],
@@ -134,7 +134,7 @@ describe("solveStep", () => {
       [E, E, E, E, E],
     ];
 
-    advanced.forEach((rows, row) => {
+    advancedStep.forEach((rows, row) => {
       rows.forEach((square, col) => {
         expect(square.fill).toEqual(expected[row][col]);
       });
