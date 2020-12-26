@@ -34,6 +34,14 @@ export const examples: { [name: string]: Puzzle } = {
     [0, 1, U, U, U, 4, U, U, U, U],
   ]),
 
+  "Advanced 5x5": createPuzzle([
+      [0, U, 4, 4, U],
+      [U, 4, U, 6, U],
+      [3, U, 7, 6, U],
+      [U, 6, U, 6, 5],
+      [U, U, U, U, 3],
+    ]),
+
   "Advanced 10x10": createPuzzle([
     [U, U, 3, 3, U, U, U, U, U, U],
     [3, U, U, U, U, U, 0, U, 0, U],
