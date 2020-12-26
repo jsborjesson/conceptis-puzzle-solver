@@ -1,11 +1,11 @@
 <template>
-  <div class="px-4 py-12 space-y-8">
+  <div class="flex flex-col items-center px-4 py-12 space-y-8">
     <h1 class="text-5xl text-center">Fill-a-Pix Solver</h1>
 
     <div class="flex flex-col items-center space-y-4">
       <span>Input a puzzle</span>
 
-      <div class="flex items-center justify-center space-x-4">
+      <div class="flex items-center space-x-4">
         <input type="number" v-model="blankHeight" class="w-20 p-2 border border-gray-400 rounded" />
         <span>x</span>
         <input type="number" v-model="blankWidth" class="w-20 p-2 border border-gray-400 rounded" />
@@ -14,7 +14,7 @@
 
       <span>or start with an example</span>
 
-      <div class="flex items-center justify-center space-x-4">
+      <div class="flex items-center space-x-4">
         <select v-model="example" class="p-2 border border-gray-400 rounded">
           <option v-for="(_, name) in examples" :key="name" :value="name">{{ name }}</option>
         </select>
@@ -23,7 +23,7 @@
     </div>
 
     <!-- Grid -->
-    <table class="mx-auto border-t border-l border-black">
+    <table class="border-t border-l border-black">
       <tr v-for="(rows, row) in puzzle" :key="row">
         <td
           v-for="(square, col) in rows"
@@ -39,7 +39,7 @@
     </table>
 
     <!-- Solver buttons -->
-    <div class="flex">
+    <div class="flex w-full max-w-lg">
       <button class="flex-1 p-4 font-bold text-white bg-red-500 rounded-l active:bg-red-700" @click="stepBack">Step back</button>
       <button class="flex-1 p-4 font-bold text-white bg-green-500 rounded-r active:bg-green-700" @click="stepForward">Step forward</button>
     </div>
