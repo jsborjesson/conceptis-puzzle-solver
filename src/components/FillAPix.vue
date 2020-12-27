@@ -6,19 +6,19 @@
       <span>Input a puzzle</span>
 
       <div class="flex items-center space-x-4">
-        <input type="number" v-model="blankHeight" class="w-20 p-2 border border-gray-400 rounded" />
+        <input type="number" v-model="blankPuzzleHeight" class="w-20 p-2 border border-gray-400 rounded" />
         <span>x</span>
-        <input type="number" v-model="blankWidth" class="w-20 p-2 border border-gray-400 rounded" />
+        <input type="number" v-model="blankPuzzleWidth" class="w-20 p-2 border border-gray-400 rounded" />
         <button @click="blankPuzzle" class="p-2 bg-gray-100 border border-gray-400 rounded active:bg-gray-300">Clear puzzle</button>
       </div>
 
       <span>or start with an example</span>
 
       <div class="flex items-center space-x-4">
-        <select v-model="example" class="p-2 border border-gray-400 rounded">
+        <select v-model="selectedExample" class="p-2 border border-gray-400 rounded">
           <option v-for="(_, name) in examples" :key="name" :value="name">{{ name }}</option>
         </select>
-        <button @click="examplePuzzle(example)" class="p-2 bg-gray-100 border border-gray-400 rounded active:bg-gray-300">Show</button>
+        <button @click="examplePuzzle(selectedExample)" class="p-2 bg-gray-100 border border-gray-400 rounded active:bg-gray-300">Show</button>
       </div>
     </div>
 
@@ -48,12 +48,12 @@
 </template>
 
 <style scoped>
+/* Remove arrows from number fields */
 input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-
 input[type=number] {
   -moz-appearance:textfield;
 }
@@ -69,10 +69,10 @@ const MAX_SQUARE_SIZE: number = 50;
 export default defineComponent({
   data() {
     return {
-      example: "",
+      selectedExample: "",
       examples,
-      blankHeight: 10,
-      blankWidth: 10,
+      blankPuzzleHeight: 10,
+      blankPuzzleWidth: 10,
 
       solutionSteps: [] as Puzzle[],
     };
@@ -90,7 +90,7 @@ export default defineComponent({
   },
   methods: {
     blankPuzzle(): void {
-      this.solutionSteps = [blankPuzzle(this.blankHeight, this.blankWidth)];
+      this.solutionSteps = [blankPuzzle(this.blankPuzzleHeight, this.blankPuzzleWidth)];
     },
     examplePuzzle(name: string): void {
       const example = examples[name];
