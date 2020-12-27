@@ -73,19 +73,24 @@ export default defineComponent({
       examples,
       blankPuzzleHeight: 10,
       blankPuzzleWidth: 10,
+      viewportWidth: window.innerWidth,
 
       solutionSteps: [] as Puzzle[],
     };
   },
   mounted(): void {
     this.blankPuzzle();
+
+    window.addEventListener("resize", () => {
+      this.viewportWidth = window.innerWidth;
+    });
   },
   computed: {
     puzzle(): Puzzle {
       return this.solutionSteps[this.solutionSteps.length - 1];
     },
     squareSize(): number {
-      return Math.min(window.innerWidth / this.puzzle[0].length, MAX_SQUARE_SIZE);
+      return Math.min(this.viewportWidth / this.puzzle[0].length, MAX_SQUARE_SIZE);
     },
   },
   methods: {
