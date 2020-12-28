@@ -1,5 +1,5 @@
 import { deepCopy, difference } from "./utils";
-import { Puzzle, Color } from "./puzzles";
+import { Puzzle, Square, Color } from "./puzzles";
 
 interface Position {
   row: number;
@@ -7,18 +7,35 @@ interface Position {
 }
 
 /*
-* Makes a single pass over the entire puzzle, filling in all basic clues.
-*
-* Returns a copy of the solution, or undefined if no progress was made.
-* It does not alter the parameter.
+* Returns a copy of the given puzzle a step closer to the solution (without
+* touching the original) or undefined if no progress could be made.
 */
 export const solveStep = (puzzle: Puzzle): Puzzle | undefined => {
   const solution = deepCopy(puzzle);
+  const basicProgress = solveStepBasic(solution);
+
+  if (basicProgress) {
+    return solution;
+  }
+
+  const advancedProgress = solveStepAdvanced(solution);
+  if (advancedProgress) {
+    return solution;
+  }
+
+  return undefined;
+};
+
+
+/*
+* Solves all visible basic clues of a puzzle.
+*/
+export const solveStepBasic = (puzzle: Puzzle): boolean => {
   let progress = false;
 
-  solution.forEach((rows, row) =>  {
-    rows.forEach((_, col) => {
-      const solved = solveSquare(solution, { row, col });
+  puzzle.forEach((rows, row) =>  {
+    rows.forEach((square, col) => {
+      const solved = solveSquareBasic(puzzle, square, { row, col });
 
       if (solved) {
         progress = true;
@@ -26,21 +43,15 @@ export const solveStep = (puzzle: Puzzle): Puzzle | undefined => {
     })
   });
 
-  if (!progress) {
-    return solveStepAdvanced(puzzle);
-  }
-
-  return solution;
+  return progress;
 };
 
-const solveSquare = (puzzle: Puzzle, pos: Position): boolean => {
-  const square = puzzle[pos.row][pos.col];
-
+const solveSquareBasic = (puzzle: Puzzle, square: Square, pos: Position): boolean => {
   if (square.number === undefined) {
     return false;
   }
 
-  const neighbors = neighborIndices(puzzle, pos);
+  const neighbors = squaresAround(puzzle, pos);
   const { filled, empty } = count(puzzle, neighbors);
   const toBeFilled = square.number - filled;
 
@@ -55,55 +66,76 @@ const solveSquare = (puzzle: Puzzle, pos: Position): boolean => {
   return false;
 };
 
-const solveStepAdvanced = (puzzle: Puzzle): Puzzle | undefined => {
-  const solution = deepCopy(puzzle);
-  let progress = false;
+const solveStepAdvanced = (puzzle: Puzzle): boolean => {
+  for (let row = 0; row < puzzle.length; row += 1) {
+    for (let col = 0; col < puzzle[0].length; col += 1) {
 
-  solution.forEach((rows, row) =>  {
-    rows.forEach((_, col) => {
-      const neighbors = neighborIndices(solution, { row, col });
-      const numberedNeighbors = neighbors.filter(({ row, col }) => solution[row][col].number !== undefined);
+      const neighbors = squaresAround(puzzle, { row, col });
 
-      // forEachPair
-      for (let aPos of numberedNeighbors) {
-        for (let bPos of numberedNeighbors) {
+      // For each pair of numbered squares which share neighbors, check if the
+      // number of squares that **must** be filled in their shared squares lets us
+      // fill in the non-shared squares.
+      for (let aPos of neighbors) {
+        const a = puzzle[aPos.row][aPos.col];
+
+        if (a.number === undefined) {
+          continue;
+        }
+
+        for (let bPos of neighbors) {
           if (aPos === bPos) {
             continue;
           }
 
-          const a = solution[aPos.row][aPos.col];
-          const b = solution[bPos.row][bPos.col];
+          const b = puzzle[bPos.row][bPos.col];
 
-          const neighborsOfA = neighborIndices(solution, aPos);
-          const neighborsOfB = neighborIndices(solution, bPos);
+          // Assume that a > b from here on, no need to check twice
+          if (b.number === undefined || b.number > a.number) {
+            continue;
+          }
 
-          const aPrime = difference(neighborsOfA, neighborsOfB);
-          const bPrime = difference(neighborsOfB, neighborsOfA);
+          const progress = solveSquaresAdvanced(puzzle, a, b, aPos, bPos);
 
-          const { filled: aF, empty: aE } = count(solution, aPrime);
-          const { filled: bF } = count(solution, bPrime);
-
-          const minCommon = a.number - aF - aE;
-          const maxCommon = b.number - bF;
-
-          if (minCommon === maxCommon) {
-            const aProg = fill(solution, aPrime, "filled");
-            const bProg = fill(solution, bPrime, "crossed");
-            if (!progress) {
-              progress = aProg || bProg;
-            }
+          if (progress) {
+            return true;
           }
         }
       }
-    })
-  });
-
-  if (progress) {
-    return solution;
+    }
   }
-  return undefined;
+
+  return false;
 }
 
+// Considers a pair of squares
+const solveSquaresAdvanced = (puzzle: Puzzle, a: Square, b: Square, aPos: Position, bPos: Position): boolean => {
+  const neighborsOfA = squaresAround(puzzle, aPos);
+  const neighborsOfB = squaresAround(puzzle, bPos);
+
+  // Non-shared neighbors
+  const aPrime = difference(neighborsOfA, neighborsOfB);
+  const bPrime = difference(neighborsOfB, neighborsOfA);
+
+  const { filled: aPrimeFilled, empty: aPrimeEmpty } = count(puzzle, aPrime);
+  const { filled: bPrimeFilled } = count(puzzle, bPrime);
+
+  // The minimum filled squares in the middle assuming that
+  // all non-shared neighbors of A have been filled
+  const minCommon = a.number - aPrimeFilled - aPrimeEmpty;
+
+  // The maximum filled squares in the middle assuming that
+  // we place as many filled squares as B allows there
+  const maxCommon = b.number - bPrimeFilled;
+
+  if (minCommon === maxCommon) {
+    const aProg = fill(puzzle, aPrime, "filled");
+    const bProg = fill(puzzle, bPrime, "crossed");
+
+    return aProg || bProg;
+  }
+};
+
+// Counts the number of squares filled/empty/crossed
 const count = (puzzle: Puzzle, squares: Position[]): { filled: number, empty: number, crossed: number } => {
   const result = {
     filled: 0,
@@ -118,6 +150,7 @@ const count = (puzzle: Puzzle, squares: Position[]): { filled: number, empty: nu
   return result;
 };
 
+// Fills all empty squares given with a color, returns whether anything was filled.
 const fill = (puzzle: Puzzle, squares: Position[], color: Color): boolean => {
   let progress = false;
 
@@ -132,20 +165,22 @@ const fill = (puzzle: Puzzle, squares: Position[], color: Color): boolean => {
 };
 
 // Returns the index pairs of the 4-9 available neighbors (including self) in a grid.
-const neighborIndices = (puzzle: Puzzle, pos: Position): Position[] => {
+const squaresAround = (puzzle: Puzzle, pos: Position): Position[] => {
+  const result: Position[] = [];
+  const height = puzzle.length;
+  const width = puzzle[0].length;
+
   const offsets = [
     [-1, -1], [-1, 0], [-1, 1],
     [0, -1], [0, 0], [0, 1],
     [1, -1], [1, 0], [1, 1],
   ];
 
-  const result: Position[] = [];
-
   offsets.forEach(([offsetRow, offsetCol]) => {
-    const [row, col] = [pos.row + offsetRow, pos.col + offsetCol];
+    const p = { row: pos.row + offsetRow, col: pos.col + offsetCol };
 
-    if (row >= 0 && row < puzzle.length && col >= 0 && col < puzzle[row].length) {
-      result.push({ row, col });
+    if (p.row >= 0 && p.row < height && p.col >= 0 && p.col < width) {
+      result.push(p);
     }
   });
 
