@@ -3,9 +3,10 @@ export const deepCopy = <T>(obj: T): T => {
 };
 
 export const difference = <T>(a: T[], b: T[]): T[] => {
-  return a.filter(item => !b.includes(item));
-};
+  const aVal = a.map(obj => JSON.stringify(obj));
+  const bVal = b.map(obj => JSON.stringify(obj));
 
-export const intersection = <T>(a: T[], b: T[]): T[] => {
-  return a.filter(item => b.includes(item));
+  return aVal
+    .filter(item => !bVal.includes(item))
+    .map(item => JSON.parse(item));
 };

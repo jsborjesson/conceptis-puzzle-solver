@@ -1,4 +1,4 @@
-import { deepCopy } from "./utils";
+import { deepCopy, difference } from "./utils";
 import { Puzzle, Color } from "./puzzles";
 
 interface Position {
@@ -27,7 +27,7 @@ export const solveStep = (puzzle: Puzzle): Puzzle | undefined => {
   });
 
   if (!progress) {
-    return undefined;
+    return solveStepAdvanced(puzzle);
   }
 
   return solution;
@@ -54,6 +54,55 @@ const solveSquare = (puzzle: Puzzle, pos: Position): boolean => {
 
   return false;
 };
+
+const solveStepAdvanced = (puzzle: Puzzle): Puzzle | undefined => {
+  const solution = deepCopy(puzzle);
+  let progress = false;
+
+  solution.forEach((rows, row) =>  {
+    rows.forEach((_, col) => {
+      const neighbors = neighborIndices(solution, { row, col });
+      const numberedNeighbors = neighbors.filter(({ row, col }) => solution[row][col].number !== undefined);
+
+      // forEachPair
+      for (let aPos of numberedNeighbors) {
+        for (let bPos of numberedNeighbors) {
+          if (aPos === bPos) {
+            continue;
+          }
+
+          const a = solution[aPos.row][aPos.col];
+          const b = solution[bPos.row][bPos.col];
+
+          const neighborsOfA = neighborIndices(solution, aPos);
+          const neighborsOfB = neighborIndices(solution, bPos);
+
+          const aPrime = difference(neighborsOfA, neighborsOfB);
+          const bPrime = difference(neighborsOfB, neighborsOfA);
+
+          const { filled: aF, empty: aE } = count(solution, aPrime);
+          const { filled: bF } = count(solution, bPrime);
+
+          const minCommon = a.number - aF - aE;
+          const maxCommon = b.number - bF;
+
+          if (minCommon === maxCommon) {
+            const aProg = fill(solution, aPrime, "filled");
+            const bProg = fill(solution, bPrime, "crossed");
+            if (!progress) {
+              progress = aProg || bProg;
+            }
+          }
+        }
+      }
+    })
+  });
+
+  if (progress) {
+    return solution;
+  }
+  return undefined;
+}
 
 const count = (puzzle: Puzzle, squares: Position[]): { filled: number, empty: number, crossed: number } => {
   const result = {

@@ -1,4 +1,4 @@
-import { deepCopy, difference, intersection } from "../utils";
+import { deepCopy, difference } from "../utils";
 
 describe("deepCopy", () => {
   test("changing a copy does not alter original", () => {
@@ -23,14 +23,12 @@ describe("difference", () => {
     expect(difference(a, b)).toEqual([1]);
     expect(difference(b, a)).toEqual([4]);
   });
-});
 
-describe("intersection", () => {
-  test("returns intersection between two arrays", () => {
-    const a = [1, 2, 3];
-    const b = [2, 3, 4];
+  test("returns difference between two arrays of reference types", () => {
+    const a = [{ n: 1 }, { n: 2 }, { n: 3 }];
+    const b = [{ n: 2 }, { n: 3 }, { n: 4 }];
 
-    expect(intersection(a, b)).toEqual([2, 3]);
-    expect(intersection(b, a)).toEqual([2, 3]);
+    expect(difference(a, b)).toEqual([{ n: 1 }]);
+    expect(difference(b, a)).toEqual([{ n: 4 }]);
   });
 });

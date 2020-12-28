@@ -80,4 +80,69 @@ describe("solveStep", () => {
       });
     });
   });
+
+  test("solves advanced equal neighbors", () => {
+    const p = createPuzzle([
+      [U, U, U],
+      [U, 5, U],
+      [U, 5, U],
+    ]);
+    const s = solveStep(p);
+
+    const expected = [
+      [X, X, X],
+      [E, E, E],
+      [E, E, E],
+    ];
+
+    s.forEach((rows, row) => {
+      rows.forEach((square, col) => {
+        expect(square.fill).toEqual(expected[row][col]);
+      });
+    });
+  });
+
+  test("solves advanced neighbors", () => {
+    const p = createPuzzle([
+      [U, U, U, U],
+      [U, 1, 4, U],
+      [U, U, U, U],
+    ]);
+    const s = solveStep(p);
+
+    const expected = [
+      [X, E, E, F],
+      [X, E, E, F],
+      [X, E, E, F],
+    ];
+
+    s.forEach((rows, row) => {
+      rows.forEach((square, col) => {
+        expect(square.fill).toEqual(expected[row][col]);
+      });
+    });
+  });
+
+  test("solves advanced neighbors with filled neighbors", () => {
+    const p = createPuzzle([
+      [U, U, U, U],
+      [U, 1, 3, U],
+      [U, U, U, U],
+    ]);
+    p[1][3].fill = "crossed"
+
+    const s = solveStep(p);
+
+    const expected = [
+      [X, E, E, F],
+      [X, E, E, X],
+      [X, E, E, F],
+    ];
+
+    s.forEach((rows, row) => {
+      rows.forEach((square, col) => {
+        expect(square.fill).toEqual(expected[row][col]);
+      });
+    });
+  });
 });
