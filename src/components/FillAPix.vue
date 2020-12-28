@@ -69,7 +69,7 @@ const MAX_SQUARE_SIZE: number = 50;
 export default defineComponent({
   data() {
     return {
-      selectedExample: "",
+      selectedExample: Object.keys(examples)[0],
       examples,
       blankPuzzleHeight: 10,
       blankPuzzleWidth: 10,
