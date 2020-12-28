@@ -23,14 +23,14 @@
     </div>
 
     <!-- Grid -->
-    <table class="border-t border-l border-black">
+    <table>
       <tr v-for="(rows, row) in puzzle" :key="row">
         <td
           v-for="(square, col) in rows"
           :key="row + 'x' + col"
-          class="w-12 h-12 text-center border-b border-r border-black"
+          class="w-12 h-12 text-center border border-gray-700"
           :class="{'bg-black text-white': square.fill === 'filled', 'bg-gray-300': square.fill === 'crossed'}"
-          :style="`width: ${squareSize}px; height: ${squareSize}px;`">
+          :style="`width: ${squareSize}px; height: ${squareSize}px; font-size: ${squareSize / 2}px`">
           <input
             type="number"
             class="w-full text-center bg-transparent focus:outline-none"
