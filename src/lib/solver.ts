@@ -12,8 +12,8 @@ interface Position {
 */
 export const solveStep = (puzzle: Puzzle): Puzzle | undefined => {
   const solution = deepCopy(puzzle);
-  const basicProgress = solveStepBasic(solution);
 
+  const basicProgress = solveStepBasic(solution);
   if (basicProgress) {
     return solution;
   }
