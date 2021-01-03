@@ -2,29 +2,17 @@
   <div class="flex flex-col items-center px-4 py-12 space-y-8">
     <h1 class="text-5xl text-center">Pic-a-Pix Solver</h1>
 
+    <div>
+      <input type="checkbox" id="editable" v-model="editable">
+      <label for="editable">Show inputs</label>
+    </div>
+
     <table>
       <!-- Vertical inputs -->
       <tr>
-        <!-- Vertical gap -->
-        <th></th>
-        <th></th>
-        <th></th>
-
-        <th v-for="(_, col) in puzzle.vertical" :key="col">
-          <div class="flex flex-col mb-1 space-y-1">
-            <button class="text-white bg-red-500 rounded" @click="removeNumber('vertical', col)">x</button>
-            <input type="number" :style="{ width: squareSize + 'px' }" class="text-center border rounded" v-model="inputs['vertical'][col]" />
-            <button class="text-white bg-green-500 rounded" @click="addNumber('vertical', col)">v</button>
-          </div>
-        </th>
-      </tr>
-
-      <!-- Vertical clues -->
-      <tr class="h-full">
-        <!-- Vertical gap -->
-        <th colspan="2">
+        <th colspan="2" rowspan="2">
           <!-- Palette -->
-          <div class="flex justify-center space-x-2">
+          <div class="flex justify-center space-x-2" v-if="editable">
             <span
               v-for="color in palette"
               :key="color"
@@ -34,6 +22,21 @@
               @click="paletteSelected = color" />
           </div>
         </th>
+
+        <th></th>
+
+        <th v-for="(_, col) in puzzle.vertical" :key="col">
+          <div class="flex flex-col mb-1 space-y-1" v-if="editable">
+            <button class="text-white bg-red-500 rounded" @click="removeNumber('vertical', col)">x</button>
+            <input type="number" :style="{ width: squareSize + 'px' }" class="text-center border rounded" v-model="inputs['vertical'][col]" />
+            <button class="text-white bg-green-500 rounded" @click="addNumber('vertical', col)">v</button>
+          </div>
+        </th>
+      </tr>
+
+      <!-- Vertical clues -->
+      <tr class="h-full">
+        <!-- gap -->
         <th></th>
 
         <th v-for="col in puzzle.vertical" :key="col" class="h-full p-0 border border-gray-500">
@@ -49,17 +52,15 @@
         </th>
       </tr>
 
-      <!-- Vertical gap -->
+      <!-- gap -->
       <tr class="h-2">
-        <th></th>
-        <th></th>
-        <th></th>
+        <th colspan="3"></th>
       </tr>
 
       <tr v-for="(clues, row) in puzzle.horizontal" :key="row">
         <!-- Horizontal inputs -->
         <th>
-          <div class="flex flex-row mr-1 space-x-1">
+          <div class="flex flex-row mr-1 space-x-1" v-if="editable">
             <button class="text-white bg-red-500 rounded" :style="{ width: squareSize + 'px' }" @click="removeNumber('horizontal', row)">x</button>
             <input type="number" :style="{ width: squareSize + 'px' }" class="text-center border rounded" v-model="inputs['horizontal'][row]" />
             <button class="text-white bg-green-500 rounded" :style="{ width: squareSize + 'px' }" @click="addNumber('horizontal', row)">></button>
@@ -150,6 +151,7 @@ export default defineComponent({
       paletteSelected: "red" as Color,
       puzzle: example,
       squareSize: 30,
+      editable: true,
       inputs: {
         horizontal: {} as { [key: number]: number },
         vertical: {} as { [key: number]: number },
