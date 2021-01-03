@@ -3,7 +3,7 @@
     <h1 class="text-5xl text-center">Pic-a-Pix Solver</h1>
 
     <div>
-      <input type="checkbox" id="editable" v-model="editable">
+      <input type="checkbox" id="editable" v-model="editable" class="m-2">
       <label for="editable">Show inputs</label>
     </div>
 
@@ -12,14 +12,24 @@
       <tr>
         <th colspan="2" rowspan="2">
           <!-- Palette -->
-          <div class="flex justify-center space-x-2" v-if="editable">
-            <span
-              v-for="color in palette"
-              :key="color"
-              :style="{ backgroundColor: color }"
-              class="block w-8 h-8 rounded-full opacity-50 cursor-pointer"
-              :class="{ 'opacity-100 shadow': color === paletteSelected }"
-              @click="paletteSelected = color" />
+          <div class="space-y-2" v-if="editable">
+            <div class="flex justify-center space-x-2">
+              <span
+                v-for="color in palette"
+                :key="color"
+                :style="{ backgroundColor: color }"
+                class="block w-8 h-8 rounded-full opacity-50 cursor-pointer"
+                :class="{ 'opacity-100 shadow': color === paletteSelected }"
+                @click="paletteSelected = color" />
+            </div>
+
+            <div>
+              <input
+                type="number"
+                class="w-8 text-xl font-bold text-center rounded"
+                :style="{ color: paletteSelected }"
+                v-model="numberSelected" />
+            </div>
           </div>
         </th>
 
@@ -28,7 +38,6 @@
         <th v-for="(_, col) in puzzle.vertical" :key="col">
           <div class="flex flex-col mb-1 space-y-1" v-if="editable">
             <button class="text-white bg-red-500 rounded" @click="removeNumber('vertical', col)">x</button>
-            <input type="number" :style="{ width: squareSize + 'px' }" class="text-center border rounded" v-model="inputs['vertical'][col]" />
             <button class="text-white bg-green-500 rounded" @click="addNumber('vertical', col)">v</button>
           </div>
         </th>
@@ -62,7 +71,6 @@
         <th>
           <div class="flex flex-row mr-1 space-x-1" v-if="editable">
             <button class="text-white bg-red-500 rounded" :style="{ width: squareSize + 'px' }" @click="removeNumber('horizontal', row)">x</button>
-            <input type="number" :style="{ width: squareSize + 'px' }" class="text-center border rounded" v-model="inputs['horizontal'][row]" />
             <button class="text-white bg-green-500 rounded" :style="{ width: squareSize + 'px' }" @click="addNumber('horizontal', row)">></button>
           </div>
         </th>
@@ -152,26 +160,19 @@ export default defineComponent({
       puzzle: example,
       squareSize: 30,
       editable: true,
-      inputs: {
-        horizontal: {} as { [key: number]: number },
-        vertical: {} as { [key: number]: number },
-      },
+      numberSelected: 1,
     }
   },
   methods: {
     addNumber(direction: "vertical" | "horizontal", index: number): void {
-      const number = this.inputs[direction][index];
-
-      if (!number) {
+      if (!this.numberSelected) {
         return;
       }
 
       this.puzzle[direction][index].unshift({
-        number,
-        color: this.paletteSelected
+        number: this.numberSelected,
+        color: this.paletteSelected,
       });
-
-      this.inputs[direction][index] = "";
     },
     removeNumber(direction: "vertical" | "horizontal", index: number): void {
       this.puzzle[direction][index].shift();
