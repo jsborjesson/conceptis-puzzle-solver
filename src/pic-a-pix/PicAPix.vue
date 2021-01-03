@@ -123,12 +123,23 @@ const example: Puzzle = {
     [{ number: 6, color: "red" }, { number: 2, color: "black" }],
     [{ number: 6, color: "red" }, { number: 2, color: "black" }],
     [{ number: 1, color: "red" }, { number: 4, color: "blue" }, { number: 2, color: "black" }],
+    [{ number: 6, color: "blue" }, { number: 2, color: "black" }],
+    [{ number: 7, color: "blue" }, { number: 1, color: "black" }],
+    [{ number: 5, color: "blue" }, { number: 1, color: "blue" }],
+    [{ number: 3, color: "blue" }, { number: 2, color: "blue" }],
+    [{ number: 5, color: "blue" }],
   ],
   horizontal: [
     [{ number: 3, color: "red" }, { number: 3, color: "blue" }],
     [{ number: 5, color: "red" }, { number: 5, color: "blue" }],
     [{ number: 4, color: "red" }, { number: 6, color: "blue" }],
     [{ number: 4, color: "red" }, { number: 4, color: "blue" }, { number: 1, color: "blue" }],
+    [{ number: 4, color: "red" }, { number: 4, color: "blue" }, { number: 1, color: "blue" }],
+    [{ number: 3, color: "red" }, { number: 3, color: "blue" }, { number: 2, color: "blue" }],
+    [{ number: 1, color: "black" }, { number: 4, color: "blue" }],
+    [{ number: 2, color: "black" }, { number: 2, color: "black" }],
+    [{ number: 3, color: "black" }],
+    [{ number: 1, color: "black" }],
   ],
 };
 
