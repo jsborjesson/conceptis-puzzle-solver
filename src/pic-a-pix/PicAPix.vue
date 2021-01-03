@@ -160,8 +160,14 @@ export default defineComponent({
   },
   methods: {
     addNumber(direction: "vertical" | "horizontal", index: number): void {
+      const number = this.inputs[direction][index];
+
+      if (!number) {
+        return;
+      }
+
       this.puzzle[direction][index].unshift({
-        number: this.inputs[direction][index],
+        number,
         color: this.paletteSelected
       });
 
