@@ -61,8 +61,8 @@ input[type=number] {
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { solveStep } from "../lib/solver";
-import { blankPuzzle, Puzzle, examples } from "../lib/puzzles";
+import { solveStep } from "./solver";
+import { blankPuzzle, Puzzle, examples } from "./puzzles";
 
 const MAX_SQUARE_SIZE: number = 50;
 
