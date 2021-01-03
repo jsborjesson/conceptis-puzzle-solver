@@ -2,18 +2,7 @@
   <div class="flex flex-col items-center px-4 py-12 space-y-8">
     <h1 class="text-5xl text-center">Pic-a-Pix Solver</h1>
 
-    <!-- Palette -->
-    <div class="flex space-x-2">
-      <span
-        v-for="color in palette"
-        :key="color"
-        :style="`background-color: ${color}`"
-        class="block w-8 h-8 rounded-full opacity-50 cursor-pointer"
-        :class="{ 'opacity-100 shadow': color === paletteSelected }"
-        @click="paletteSelected = color" />
-    </div>
-
-    <table class="box-border">
+    <table>
       <!-- Vertical inputs -->
       <tr>
         <!-- Vertical gap -->
@@ -21,16 +10,30 @@
         <th></th>
         <th></th>
 
-        <th v-for="col in puzzle.vertical" :key="col">
-          <input type="number" :style="`width: ${squareSize}px`" class="text-center border rounded"/>
+        <th v-for="(_, col) in puzzle.vertical" :key="col">
+          <div class="flex flex-col mb-1 space-y-1">
+            <button class="text-white bg-red-500 rounded" @click="removeNumber('vertical', col)">x</button>
+            <input type="number" :style="{ width: squareSize + 'px' }" class="text-center border rounded" v-model="inputs['vertical'][col]" />
+            <button class="text-white bg-green-500 rounded" @click="addNumber('vertical', col)">v</button>
+          </div>
         </th>
       </tr>
 
       <!-- Vertical clues -->
       <tr class="h-full">
         <!-- Vertical gap -->
-        <th></th>
-        <th></th>
+        <th colspan="2">
+          <!-- Palette -->
+          <div class="flex justify-center space-x-2">
+            <span
+              v-for="color in palette"
+              :key="color"
+              :style="{ backgroundColor: color }"
+              class="block w-8 h-8 rounded-full opacity-50 cursor-pointer"
+              :class="{ 'opacity-100 shadow': color === paletteSelected }"
+              @click="paletteSelected = color" />
+          </div>
+        </th>
         <th></th>
 
         <th v-for="col in puzzle.vertical" :key="col" class="h-full p-0 border border-gray-500">
@@ -53,17 +56,21 @@
         <th></th>
       </tr>
 
-      <tr v-for="row in puzzle.horizontal" :key="row">
+      <tr v-for="(clues, row) in puzzle.horizontal" :key="row">
         <!-- Horizontal inputs -->
         <th>
-          <input type="number" :style="`width: ${squareSize}px`" class="text-center border rounded"/>
+          <div class="flex flex-row mr-1 space-x-1">
+            <button class="text-white bg-red-500 rounded" :style="{ width: squareSize + 'px' }" @click="removeNumber('horizontal', row)">x</button>
+            <input type="number" :style="{ width: squareSize + 'px' }" class="text-center border rounded" v-model="inputs['horizontal'][row]" />
+            <button class="text-white bg-green-500 rounded" :style="{ width: squareSize + 'px' }" @click="addNumber('horizontal', row)">></button>
+          </div>
         </th>
 
         <!-- Horizontal clues -->
         <th class="p-0 border border-gray-600">
           <div class="flex justify-end">
             <span
-              v-for="clue in row"
+              v-for="clue in clues"
               :key="clue"
               :style="`color: ${clue.color}; width: ${squareSize}px; height: ${squareSize}px;`"
               class="p-1 bg-gray-300">
@@ -132,7 +139,24 @@ export default defineComponent({
       paletteSelected: "red" as Color,
       puzzle: example,
       squareSize: 30,
+      inputs: {
+        horizontal: {} as { [key: number]: number },
+        vertical: {} as { [key: number]: number },
+      },
     }
+  },
+  methods: {
+    addNumber(direction: "vertical" | "horizontal", index: number): void {
+      this.puzzle[direction][index].unshift({
+        number: this.inputs[direction][index],
+        color: this.paletteSelected
+      });
+
+      this.inputs[direction][index] = "";
+    },
+    removeNumber(direction: "vertical" | "horizontal", index: number): void {
+      this.puzzle[direction][index].shift();
+    },
   },
 })
 </script>
