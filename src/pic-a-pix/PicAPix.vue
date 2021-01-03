@@ -7,94 +7,96 @@
       <label for="editable">Show inputs</label>
     </div>
 
-    <table>
-      <!-- Vertical inputs -->
-      <tr>
-        <th colspan="2" rowspan="2">
-          <!-- Palette -->
-          <div class="space-y-2" v-if="editable">
-            <div class="flex justify-center space-x-2">
+    <div class="w-full p-4 overflow-auto">
+      <table>
+        <!-- Vertical inputs -->
+        <tr>
+          <th colspan="2" rowspan="2">
+            <!-- Palette -->
+            <div class="space-y-2" v-if="editable">
+              <div class="flex justify-center space-x-2">
+                <span
+                  v-for="color in palette"
+                  :key="color"
+                  :style="{ backgroundColor: color }"
+                  class="block w-8 h-8 rounded-full opacity-50 cursor-pointer"
+                  :class="{ 'opacity-100 shadow': color === paletteSelected }"
+                  @click="paletteSelected = color" />
+              </div>
+
+              <div>
+                <input
+                  type="number"
+                  class="w-8 text-xl font-bold text-center rounded"
+                  :style="{ color: paletteSelected }"
+                  v-model="numberSelected" />
+              </div>
+            </div>
+          </th>
+
+          <th></th>
+
+          <th v-for="(_, col) in puzzle.vertical" :key="col">
+            <div class="flex flex-col mb-1 space-y-1" v-if="editable">
+              <button class="text-white bg-red-500 rounded" @click="removeNumber('vertical', col)">x</button>
+              <button class="text-white bg-green-500 rounded" @click="addNumber('vertical', col)">v</button>
+            </div>
+          </th>
+        </tr>
+
+        <!-- Vertical clues -->
+        <tr class="h-full">
+          <!-- gap -->
+          <th></th>
+
+          <th v-for="col in puzzle.vertical" :key="col" class="h-full p-0 border border-gray-500">
+            <div class="flex flex-col justify-end h-full">
               <span
-                v-for="color in palette"
-                :key="color"
-                :style="{ backgroundColor: color }"
-                class="block w-8 h-8 rounded-full opacity-50 cursor-pointer"
-                :class="{ 'opacity-100 shadow': color === paletteSelected }"
-                @click="paletteSelected = color" />
+                v-for="clue in col"
+                :key="clue"
+                :style="`color: ${clue.color}; width: ${squareSize}px; height: ${squareSize}px;`"
+                class="bg-gray-300">
+                {{ clue.number }}
+              </span>
             </div>
+          </th>
+        </tr>
 
-            <div>
-              <input
-                type="number"
-                class="w-8 text-xl font-bold text-center rounded"
-                :style="{ color: paletteSelected }"
-                v-model="numberSelected" />
-            </div>
-          </div>
-        </th>
-
-        <th></th>
-
-        <th v-for="(_, col) in puzzle.vertical" :key="col">
-          <div class="flex flex-col mb-1 space-y-1" v-if="editable">
-            <button class="text-white bg-red-500 rounded" @click="removeNumber('vertical', col)">x</button>
-            <button class="text-white bg-green-500 rounded" @click="addNumber('vertical', col)">v</button>
-          </div>
-        </th>
-      </tr>
-
-      <!-- Vertical clues -->
-      <tr class="h-full">
         <!-- gap -->
-        <th></th>
+        <tr class="h-2">
+          <th colspan="3"></th>
+        </tr>
 
-        <th v-for="col in puzzle.vertical" :key="col" class="h-full p-0 border border-gray-500">
-          <div class="flex flex-col justify-end h-full">
-            <span
-              v-for="clue in col"
-              :key="clue"
-              :style="`color: ${clue.color}; width: ${squareSize}px; height: ${squareSize}px;`"
-              class="bg-gray-300">
-              {{ clue.number }}
-            </span>
-          </div>
-        </th>
-      </tr>
+        <tr v-for="(clues, row) in puzzle.horizontal" :key="row">
+          <!-- Horizontal inputs -->
+          <th>
+            <div class="flex flex-row mr-1 space-x-1" v-if="editable">
+              <button class="text-white bg-red-500 rounded" :style="{ width: squareSize + 'px' }" @click="removeNumber('horizontal', row)">x</button>
+              <button class="text-white bg-green-500 rounded" :style="{ width: squareSize + 'px' }" @click="addNumber('horizontal', row)">></button>
+            </div>
+          </th>
 
-      <!-- gap -->
-      <tr class="h-2">
-        <th colspan="3"></th>
-      </tr>
+          <!-- Horizontal clues -->
+          <th class="p-0 border border-gray-600">
+            <div class="flex justify-end">
+              <span
+                v-for="clue in clues"
+                :key="clue"
+                :style="`color: ${clue.color}; width: ${squareSize}px; height: ${squareSize}px;`"
+                class="p-1 bg-gray-300">
+                {{ clue.number }}
+              </span>
+            </div>
+          </th>
 
-      <tr v-for="(clues, row) in puzzle.horizontal" :key="row">
-        <!-- Horizontal inputs -->
-        <th>
-          <div class="flex flex-row mr-1 space-x-1" v-if="editable">
-            <button class="text-white bg-red-500 rounded" :style="{ width: squareSize + 'px' }" @click="removeNumber('horizontal', row)">x</button>
-            <button class="text-white bg-green-500 rounded" :style="{ width: squareSize + 'px' }" @click="addNumber('horizontal', row)">></button>
-          </div>
-        </th>
+          <!-- Horizontal gap -->
+          <td class="w-2" />
 
-        <!-- Horizontal clues -->
-        <th class="p-0 border border-gray-600">
-          <div class="flex justify-end">
-            <span
-              v-for="clue in clues"
-              :key="clue"
-              :style="`color: ${clue.color}; width: ${squareSize}px; height: ${squareSize}px;`"
-              class="p-1 bg-gray-300">
-              {{ clue.number }}
-            </span>
-          </div>
-        </th>
-
-        <!-- Horizontal gap -->
-        <td class="w-2" />
-
-        <!-- Picture -->
-        <td v-for="square in puzzle.vertical" :key="square" class="border border-gray-500"></td>
-      </tr>
-    </table>
+          <!-- Picture -->
+          <td v-for="square in puzzle.vertical" :key="square" class="border border-gray-500"></td>
+        </tr>
+      </table>
+    </div>
   </div>
 </template>
 
