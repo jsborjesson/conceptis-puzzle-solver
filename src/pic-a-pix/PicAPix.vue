@@ -2,6 +2,17 @@
   <div class="flex flex-col items-center px-4 py-12 space-y-8">
     <h1 class="text-5xl text-center">Pic-a-Pix Solver</h1>
 
+    <!-- Palette -->
+    <div class="flex space-x-2">
+      <span
+        v-for="color in palette"
+        :key="color"
+        :style="`background-color: ${color}`"
+        class="block w-8 h-8 rounded-full opacity-50 cursor-pointer"
+        :class="{ 'opacity-100 shadow': color === paletteSelected }"
+        @click="paletteSelected = color" />
+    </div>
+
     <table class="box-border">
       <!-- Vertical inputs -->
       <tr>
@@ -117,6 +128,8 @@ const example: Puzzle = {
 export default defineComponent({
   data() {
     return {
+      palette: ["red", "black", "blue"] as Color[],
+      paletteSelected: "red" as Color,
       puzzle: example,
       squareSize: 30,
     }
