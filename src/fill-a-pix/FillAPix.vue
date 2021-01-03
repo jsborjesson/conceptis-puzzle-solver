@@ -27,7 +27,7 @@
       <tr v-for="(rows, row) in puzzle" :key="row">
         <td
           v-for="(square, col) in rows"
-          :key="row + 'x' + col"
+          :key="square"
           class="w-12 h-12 text-center border border-gray-700"
           :class="{'bg-black text-white': square.fill === 'filled', 'bg-gray-300': square.fill === 'crossed'}"
           :style="`width: ${squareSize}px; height: ${squareSize}px; font-size: ${squareSize / 2}px`">
