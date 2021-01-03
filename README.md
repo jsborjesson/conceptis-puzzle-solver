@@ -1,8 +1,9 @@
-# Fill-a-Pix Solver
+# Conceptis Puzzle Solver
 
-Vue/Vite app to solve
-[Fill-a-Pix](https://www.conceptispuzzles.com/index.aspx?uri=puzzle/fill-a-pix)
-puzzles.
+Vue/Vite app to solve Conceptis Puzzles:
+
+- [Fill-a-Pix](https://www.conceptispuzzles.com/index.aspx?uri=puzzle/fill-a-pix)
+- [Pic-a-Pix](https://www.conceptispuzzles.com/index.aspx?uri=puzzle/pic-a-pix)
 
 ```sh
 # Install dependencies

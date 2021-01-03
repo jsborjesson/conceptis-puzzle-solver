@@ -1,10 +1,10 @@
 {
-  "name": "fill-a-pix-solver",
+  "name": "conceptis-puzzle-solver",
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "deploy": "vite build --base=/fill-a-pix-solver/ && touch ./dist/.nojekyll && gh-pages -d dist -t true",
+    "deploy": "vite build --base=/conceptis-puzzle-solver/ && touch ./dist/.nojekyll && gh-pages -d dist -t true",
     "test": "jest"
   },
   "dependencies": {
