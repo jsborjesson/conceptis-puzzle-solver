@@ -3,11 +3,23 @@
     <h1 class="text-5xl text-center">Pic-a-Pix Solver</h1>
 
     <table class="box-border">
-      <tr class="h-full">
-        <!-- Invisible top left corner -->
+      <!-- Vertical inputs -->
+      <tr>
+        <!-- Vertical gap -->
+        <th></th>
+        <th></th>
         <th></th>
 
+        <th v-for="col in puzzle.vertical" :key="col">
+          <input type="number" :style="`width: ${squareSize}px`" class="text-center border rounded"/>
+        </th>
+      </tr>
+
+      <!-- Vertical clues -->
+      <tr class="h-full">
         <!-- Vertical gap -->
+        <th></th>
+        <th></th>
         <th></th>
 
         <th v-for="col in puzzle.vertical" :key="col" class="h-full p-0 border border-gray-500">
@@ -23,13 +35,20 @@
         </th>
       </tr>
 
-      <!-- Horizontal gap -->
+      <!-- Vertical gap -->
       <tr class="h-2">
-        <td></td>
-        <td></td>
+        <th></th>
+        <th></th>
+        <th></th>
       </tr>
 
       <tr v-for="row in puzzle.horizontal" :key="row">
+        <!-- Horizontal inputs -->
+        <th>
+          <input type="number" :style="`width: ${squareSize}px`" class="text-center border rounded"/>
+        </th>
+
+        <!-- Horizontal clues -->
         <th class="p-0 border border-gray-600">
           <div class="flex justify-end">
             <span
@@ -42,7 +61,7 @@
           </div>
         </th>
 
-        <!-- Vertical gap -->
+        <!-- Horizontal gap -->
         <td class="w-2" />
 
         <!-- Picture -->
@@ -51,6 +70,18 @@
     </table>
   </div>
 </template>
+
+<style scoped>
+/* Remove arrows from number fields */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type=number] {
+  -moz-appearance:textfield;
+}
+</style>
 
 <script lang="ts">
 import { defineComponent } from "vue";
